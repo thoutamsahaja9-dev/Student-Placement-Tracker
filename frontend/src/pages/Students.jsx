@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { getStudents, addStudent, deleteStudent } from "../api/studentApi";
+import { getStudents, addStudent, deleteStudent, updateStudent } from "../api/studentApi";
 import StudentForm from "../components/StudentForm";
 import StudentTable from "../components/StudentTable";
 
 function Students() {
   const [students, setStudents] = useState([]);
+  const [editingId, setEditingId]=useState(null);
+  const [search, setSearch]=useState("");
   const [student, setStudent] = useState({
     name: "",
     email: "",
@@ -16,12 +18,14 @@ function Students() {
 
   useEffect(() => {
     loadStudents();
-  }, []);
+  }, [search]);
 
-  const loadStudents = async () => {
-    const data = await getStudents();
-    setStudents(data);
-  };
+const loadStudents = async () => {
+  console.log("Searching:", search);
+  const data = await getStudents(search);
+  console.log(data);
+  setStudents(data);
+};
 
   const handleChange = (e) => {
     setStudent({
@@ -30,30 +34,41 @@ function Students() {
     });
   };
 
-  const handleEdit = (studentData) => {
+const handleEdit = (studentData) => {
   setStudent(studentData);
   setEditingId(studentData.student_id);
 };
 
-  const handleSubmit = async () => {
-  if (editingId) {
-    await updateStudent(editingId, student);
-    setEditingId(null);
-  } else {
-    await addStudent(student);
+const handleSubmit = async () => {
+  const cleanedStudent = {
+    ...student,
+    cgpa: parseFloat(student.cgpa),
+    graduation_year: parseInt(student.graduation_year),
+  };
+
+  try {
+    if (editingId !== null) {
+      await updateStudent(editingId, cleanedStudent);
+      setEditingId(null);
+    } else {
+      await addStudent(cleanedStudent);
+    }
+
+    await loadStudents();
+
+    setStudent({
+      name: "",
+      email: "",
+      branch: "",
+      cgpa: "",
+      graduation_year: "",
+      phone: "",
+    });
+  } catch (error) {
+    console.log("Error in handleSubmit:", error);
   }
-
-  loadStudents();
-
-  setStudent({
-    name: "",
-    email: "",
-    branch: "",
-    cgpa: "",
-    graduation_year: "",
-    phone: "",
-  });
 };
+
 
   const handleDelete = async (id) => {
     await deleteStudent(id);
@@ -61,19 +76,33 @@ function Students() {
   };
 
   return (
-    <div>
-      <StudentForm
-        student={student}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />
+  <div>
+    <StudentForm
+      student={student}
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+      editingId={editingId}
+    />
 
-      <StudentTable
-        students={students}
-        handleDelete={handleDelete}
-      />
-    </div>
-  );
+    <br />
+
+    <input
+      type="text"
+      placeholder="Search by name..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
+
+    <br />
+    <br />
+
+    <StudentTable
+      students={students}
+      handleEdit={handleEdit}
+      handleDelete={handleDelete}
+    />
+  </div>
+);
 }
 
 export default Students;

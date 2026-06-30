@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database import SessionLocal
-from models import Student, Company
-from schemas import StudentCreate, CompanyCreate
+from models import Student, Company, Placement
+from schemas import StudentCreate, CompanyCreate, PlacementCreate
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -14,11 +14,18 @@ app.add_middleware(
 )
 
 
+from fastapi import Query
+
 @app.get("/students")
-def get_students():
+def get_students(search: str = Query(default="")):
     db = SessionLocal()
 
-    students = db.query(Student).all()
+    if search:
+        students = db.query(Student).filter(
+            Student.name.ilike(f"%{search}%")
+        ).all()
+    else:
+        students = db.query(Student).all()
 
     result = []
 
@@ -30,11 +37,10 @@ def get_students():
             "branch": student.branch,
             "cgpa": float(student.cgpa),
             "graduation_year": student.graduation_year,
-            "phone": student.phone
+            "phone": student.phone,
         })
 
     db.close()
-
     return result
 
 
@@ -189,3 +195,96 @@ def update_company(company_id: int, updated_company: CompanyCreate):
     db.close()
 
     return {"message": "Company updated successfully"}
+
+@app.get("/placements")
+def get_placements():
+    db = SessionLocal()
+
+    placements = db.query(Placement).all()
+
+    result = []
+
+    for p in placements:
+        result.append({
+            "placement_id": p.placement_id,
+            "student_id": p.student_id,
+            "student_name": p.student.name,
+            "company_id": p.company_id,
+            "company_name": p.company.company_name,
+            "placement_status": p.placement_status,
+            "placement_date": str(p.placement_date)
+        })
+
+    db.close()
+    return result
+
+@app.post("/placements")
+def add_placement(placement: PlacementCreate):
+    db = SessionLocal()
+
+    student = db.query(Student).filter(
+        Student.student_id == placement.student_id
+    ).first()
+
+    if student is None:
+        db.close()
+        return {"message": "Student not found"}
+
+    company = db.query(Company).filter(
+        Company.company_id == placement.company_id
+    ).first()
+
+    if company is None:
+        db.close()
+        return {"message": "Company not found"}
+
+    new_placement = Placement(
+        student_id=placement.student_id,
+        company_id=placement.company_id,
+        placement_status=placement.placement_status,
+        placement_date=placement.placement_date
+    )
+
+    db.add(new_placement)
+    db.commit()
+    db.refresh(new_placement)
+
+    db.close()
+
+    return {
+        "message": "Placement added successfully"
+    }
+
+@app.get("/stats/students")
+def total_students():
+    db = SessionLocal()
+    count = db.query(Student).count()
+    db.close()
+    return {"total_students": count}
+
+@app.get("/stats/companies")
+def total_companies():
+    db = SessionLocal()
+    count = db.query(Company).count()
+    db.close()
+    return {"total_companies": count}
+
+@app.get("/stats/placements")
+def total_placements():
+    db = SessionLocal()
+    count = db.query(Placement).count()
+    db.close()
+    return {"total_placements": count}
+
+@app.get("/stats/placement-rate")
+def placement_rate():
+    db = SessionLocal()
+
+    total_students = db.query(Student).count()
+    placed_students = db.query(Placement.student_id).distinct().count()
+
+    db.close()
+
+    rate = (placed_students / total_students * 100) if total_students > 0 else 0
+
+    return {"placement_rate": round(rate, 2)}

@@ -15,3 +15,12 @@ class CompanyCreate(BaseModel):
     package: float
     eligibility_cgpa: float
     drive_date: date
+
+from pydantic import BaseModel
+from datetime import date
+
+class PlacementCreate(BaseModel):
+    student_id: int
+    company_id: int
+    placement_status: str
+    placement_date: date
