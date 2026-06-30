@@ -2,6 +2,7 @@ function StudentForm({
   student,
   handleChange,
   handleSubmit,
+  editingId,
 }) {
   return (
     <div>
@@ -55,9 +56,9 @@ function StudentForm({
       />
       <br /><br />
 
-      <button onClick={handleSubmit}>
-        Add Student
-      </button>
+     <button onClick={handleSubmit}>
+       {editingId ? "Update Student" : "Add Student"}
+    </button> 
     </div>
   );
 }

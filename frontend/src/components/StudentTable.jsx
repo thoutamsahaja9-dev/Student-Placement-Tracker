@@ -1,4 +1,4 @@
-function StudentTable({ students, handleDelete }) {
+function StudentTable({ students, handleDelete, handleEdit }) {
   return (
     <div>
       <h2>Students</h2>
@@ -22,10 +22,13 @@ function StudentTable({ students, handleDelete }) {
               <td>{s.branch}</td>
               <td>{s.cgpa}</td>
               <td>
-                <button onClick={() => handleDelete(s.student_id)}>
-                  Delete
-                </button>
-              </td>
+              <button onClick={() => handleEdit(s)}>Edit</button>
+              {" "}
+             <button onClick={() => handleDelete(s.student_id)}>
+               Delete
+             </button>
+             </td> 
+
             </tr>
           ))}
         </tbody>

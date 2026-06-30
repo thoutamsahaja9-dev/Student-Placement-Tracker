@@ -1,72 +1,30 @@
 import "./App.css";
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getStudents, addStudent, deleteStudent } from "./api/studentApi";
 
 import Navbar from "./components/Navbar";
-import StudentForm from "./components/StudentForm";
-import StudentTable from "./components/StudentTable";
+import Student from "./pages/Students";
+
+import Companies from "./pages/Companies";
+import Dashboard from "./pages/Dashboard";
+import Placements from "./pages/Placements";
 
 function App() {
-  const [students, setStudents] = useState([]);
-  const [student, setStudent] = useState({
-    name: "",
-    email: "",
-    branch: "",
-    cgpa: "",
-    graduation_year: "",
-    phone: "",
-  });
-
-  useEffect(() => {
-    loadStudents();
-  }, []);
-
-  const loadStudents = async () => {
-    const data = await getStudents();
-    setStudents(data);
-  };
-
-  const handleChange = (e) => {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async () => {
-    await addStudent(student);
-    loadStudents();
-
-    setStudent({
-      name: "",
-      email: "",
-      branch: "",
-      cgpa: "",
-      graduation_year: "",
-      phone: "",
-    });
-  };
-
-  const handleDelete = async (id) => {
-    await deleteStudent(id);
-    loadStudents();
-  };
-
   return (
-    <div className="container">
+    <BrowserRouter>
       <Navbar />
 
-      <StudentForm
-        student={student}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />
-
-      <StudentTable
-        students={students}
-        handleDelete={handleDelete}
-      />
-    </div>
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/students" element={<Student />} />
+          
+          <Route path="/companies" element={<Companies />} />
+          <Route path="/placements" element={<Placements />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
