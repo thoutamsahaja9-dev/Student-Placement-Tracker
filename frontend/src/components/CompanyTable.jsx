@@ -3,7 +3,7 @@ function CompanyTable({ companies, handleEdit, handleDelete }) {
     <div>
       <h2>Companies</h2>
 
-      <table border="1">
+      <table  className="table table-striped table-hover" border="1">
         <thead>
           <tr>
             <th>ID</th>

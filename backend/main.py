@@ -3,8 +3,10 @@ from database import SessionLocal
 from models import Student, Company, Placement
 from schemas import StudentCreate, CompanyCreate, PlacementCreate
 from fastapi.middleware.cors import CORSMiddleware
+from database import Base, engine
 
 app = FastAPI()
+Base.metadata.create_all(bind=engine)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -288,3 +290,19 @@ def placement_rate():
     rate = (placed_students / total_students * 100) if total_students > 0 else 0
 
     return {"placement_rate": round(rate, 2)}
+
+@app.delete("/placements/{placement_id}")
+def delete_placement(placement_id: int):
+    db = SessionLocal()
+
+    placement = db.query(Placement).filter(
+        Placement.placement_id == placement_id
+    ).first()
+
+    if placement:
+        db.delete(placement)
+        db.commit()
+
+    db.close()
+
+    return {"message": "Placement deleted successfully"}

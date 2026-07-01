@@ -18,5 +18,5 @@ export const updatePlacement = async (id, placement) => {
 };
 
 export const deletePlacement = async (id) => {
-  await axios.delete(`${API_URL}/placements/${id}`);
+  await axios.delete(`http://127.0.0.1:8000/placements/${id}`);
 };

@@ -14,28 +14,55 @@ function Dashboard() {
   }, []);
 
   const loadStats = async () => {
-    const students = await axios.get("http://127.0.0.1:8000/stats/students");
-    const companies = await axios.get("http://127.0.0.1:8000/stats/companies");
-    const placements = await axios.get("http://127.0.0.1:8000/stats/placements");
-    const rate = await axios.get("http://127.0.0.1:8000/stats/placement-rate");
+    try {
+      const students = await axios.get("http://127.0.0.1:8000/stats/students");
+      const companies = await axios.get("http://127.0.0.1:8000/stats/companies");
+      const placements = await axios.get("http://127.0.0.1:8000/stats/placements");
+      const rate = await axios.get("http://127.0.0.1:8000/stats/placement-rate");
 
-    setStats({
-      students: students.data.total_students,
-      companies: companies.data.total_companies,
-      placements: placements.data.total_placements,
-      rate: rate.data.placement_rate,
-    });
+      setStats({
+        students: students.data.total_students,
+        companies: companies.data.total_companies,
+        placements: placements.data.total_placements,
+        rate: rate.data.placement_rate,
+      });
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    }
   };
 
   return (
-    <div>
-      <h2>Dashboard</h2>
+    <div className="container mt-4">
+      <div className="row text-center">
 
-      <div>
-        <h3>Total Students: {stats.students}</h3>
-        <h3>Total Companies: {stats.companies}</h3>
-        <h3>Total Placements: {stats.placements}</h3>
-        <h3>Placement Rate: {stats.rate}%</h3>
+        <div className="col-md-3">
+          <div className="card p-3 shadow">
+            <h5>Total Students</h5>
+            <h2>{stats.students}</h2>
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card p-3 shadow">
+            <h5>Total Companies</h5>
+            <h2>{stats.companies}</h2>
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card p-3 shadow">
+            <h5>Placements</h5>
+            <h2>{stats.placements}</h2>
+          </div>
+        </div>
+
+        <div className="col-md-3">
+          <div className="card p-3 shadow">
+            <h5>Placement Rate</h5>
+            <h2>{stats.rate}%</h2>
+          </div>
+        </div>
+
       </div>
     </div>
   );

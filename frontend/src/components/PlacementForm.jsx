@@ -43,7 +43,7 @@ function PlacementForm({
       />
       <br /><br />
 
-      <button onClick={handleSubmit}>
+      <button className="btn btn-primary" onClick={handleSubmit}>
         {editingId ? "Update Placement" : "Add Placement"}
       </button>
     </div>

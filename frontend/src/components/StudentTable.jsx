@@ -3,7 +3,7 @@ function StudentTable({ students, handleDelete, handleEdit }) {
     <div>
       <h2>Students</h2>
 
-      <table border="1">
+      <table  className="table table-striped table-hover" border="1">
         <thead>
           <tr>
             <th>ID</th>
