@@ -5,6 +5,10 @@ function Navbar() {
     <nav>
       <h1>🎓 Student Placement Tracker</h1>
 
+      <li>
+        <Link to="/login">Login</Link>
+      </li>
+
       <Link to="/">Dashboard</Link>{" | "}
       <Link to="/students">Students</Link>{" | "}
       <Link to="/companies">Companies</Link>{" | "}

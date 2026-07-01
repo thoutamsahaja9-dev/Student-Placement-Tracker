@@ -5,7 +5,7 @@ import { getStudents, addStudent, deleteStudent } from "./api/studentApi";
 
 import Navbar from "./components/Navbar";
 import Student from "./pages/Students";
-
+import Login from "./pages/Login";
 import Companies from "./pages/Companies";
 import Dashboard from "./pages/Dashboard";
 import Placements from "./pages/Placements";
@@ -17,9 +17,9 @@ function App() {
 
       <div className="container">
         <Routes>
+          <Route path="/login" element={<Login/>}/>
           <Route path="/" element={<Dashboard />} />
           <Route path="/students" element={<Student />} />
-          
           <Route path="/companies" element={<Companies />} />
           <Route path="/placements" element={<Placements />} />
         </Routes>
