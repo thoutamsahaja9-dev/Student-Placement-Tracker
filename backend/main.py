@@ -5,11 +5,12 @@ from schemas import StudentCreate, CompanyCreate, PlacementCreate
 from fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine
 
-app = FastAPI()
-Base.metadata.create_all(bind=engine)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://student-placement-tracker-9b7v6v360-sahaja.vercel.app/"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://*.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
