@@ -4,6 +4,7 @@ from models import Student, Company, Placement
 from schemas import StudentCreate, CompanyCreate, PlacementCreate
 from fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine
+app=FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
