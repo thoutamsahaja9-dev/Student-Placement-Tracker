@@ -15,10 +15,10 @@ function Dashboard() {
 
   const loadStats = async () => {
     try {
-      const students = await axios.get("http://127.0.0.1:8000/stats/students");
-      const companies = await axios.get("http://127.0.0.1:8000/stats/companies");
-      const placements = await axios.get("http://127.0.0.1:8000/stats/placements");
-      const rate = await axios.get("http://127.0.0.1:8000/stats/placement-rate");
+      const students = await axios.get("https://student-placement-tracker-jrnn.onrender.com");
+      const companies = await axios.get("https://student-placement-tracker-jrnn.onrender.com");
+      const placements = await axios.get("https://student-placement-tracker-jrnn.onrender.com");
+      const rate = await axios.get("https://student-placement-tracker-jrnn.onrender.com");
 
       setStats({
         students: students.data.total_students,

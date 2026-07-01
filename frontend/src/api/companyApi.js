@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:8000";
-
+const API_URL = "https://student-placement-tracker-jrnn.onrender.com";
 export const getCompanies = async () => {
   const response = await axios.get(`${API_URL}/companies`);
   return response.data;
